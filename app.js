@@ -3,8 +3,18 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const LocalStrategy = require("passport-local").Strategy;
+const mongoose = require("mongoose");
+const passport = require("passport")
+const session = require("express-session")
 
+mongoose.connect("mongodb://127.0.0.1:27017/")
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, "error connecting with mongodb"))
 var indexRouter = require('./routes/index');
+
+
+
 
 var app = express();
 
@@ -17,6 +27,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  secret:"!$%&'()*+,-./0123456789:;<=>?",
+  resave: false,
+  saveUninitialized: true
+}))
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', indexRouter);
 
