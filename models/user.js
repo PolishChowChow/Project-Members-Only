@@ -4,10 +4,14 @@ const userSchema = new Schema({
     first_name: {
         required: true,
         type: String,
+        minLength: 5,
+        maxLength: 50,
     },
     last_name: {
         required: true,
         type: String,
+        minLength: 5,
+        maxLength: 50,
     },
     username: {
         required: true,
@@ -19,13 +23,12 @@ const userSchema = new Schema({
         required: true,
         type: String,
         minLength: 8,
-        maxLength: 40,
     },
     membership_status: {
-        reqired: true,
-        type: "basic" | "verified_user" | "admin",
+        required: true,
+        type: String,
         default: "basic"
     }
 })
 const User = mongoose.model("User", userSchema)
-export default User;
+module.exports = User;
