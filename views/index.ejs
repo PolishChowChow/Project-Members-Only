@@ -1,11 +1,62 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <title>title</title>
+    <link rel='stylesheet' href='/stylesheets/index.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <header>
+      <div>
+        <h2>Membership 
+          <% if(undefined !== user && user.membership_status === "admin"){ %>
+            - <span class="danger">Admin mode</span>
+            <% } %>
+        </h2>
+      </div>
+      <div>
+        <% if(user){ %>
+          <a href="/message/add">Add a Message</a>
+          <% if(user.membership_status === "basic"){ %>
+            <a href="/upgrade-to-member">Upgrade your membership status to member</a>
+          <% } %>
+          <% if(user.membership_status === "member"){ %>
+            <a href="/upgrade-to-admin">Upgrade your membership status to admin</a>
+          <% } %>
+          <a href="/log-out">Log Out</a>
+        <% }else{ %>
+        <a href="/log-in">Login</a>
+        <a href="/sign-up">Sign Up</a>
+        <% } %>
+      </div>
+    </header>
+    <main>
+
+
+        <% messages.forEach(message => { %>
+        <div class="message">
+          <div class="message-header">
+            <% if(undefined !== user){ %>
+            <div class="username"><%=message.user_id.username%></div>
+            <div class="timestamp"><%=message.timestamp.toLocaleDateString()%></div>
+            <% if(user.membership_status === "admin"){ %>
+              <div class="name"><%=message.user_id.first_name%> <%=message.user_id.last_name%></div>
+            <% } %>
+            
+            <% } %>
+          </div>
+          <div class="title">
+            <%=message.title%>
+          </div>
+          <div class="content">
+           <div class="text"> <%=message.content%></div>
+              <% if(user?.membership_status === "admin"){ %>
+                <form action="/message/delete/<%=message.id%>" method="post">
+                  <button>Remove</button>
+                </form>
+              <% } %>
+          </div>
+        </div>
+        <% }) %>
+    </main>
   </body>
 </html>
